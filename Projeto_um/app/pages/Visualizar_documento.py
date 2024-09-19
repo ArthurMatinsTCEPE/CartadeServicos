@@ -17,39 +17,47 @@ def listar_arquivos():
     arquivos = [f for f in os.listdir(UPLOAD_FOLDER) if f.endswith('.pdf')]
     return arquivos
 
+# Função para encontrar o arquivo mais recente
+def arquivo_mais_recente(arquivos):
+    arquivos_completos = [os.path.join(UPLOAD_FOLDER, f) for f in arquivos]
+    return max(arquivos_completos, key=os.path.getctime) if arquivos_completos else None
+
 st.title("Página 2 - Carregar Relatórios Antigos")
 
 # Listar arquivos PDF no diretório UPLOAD_FOLDER
 arquivos = listar_arquivos()
 
 if arquivos:
-    selected_file = st.selectbox("Selecione um arquivo para processar:", arquivos)
-    
+    # Encontra o arquivo mais recente
+    arquivo_recente = arquivo_mais_recente(arquivos)
+    arquivo_recente_nome = os.path.basename(arquivo_recente)
+
+    # Seleciona o arquivo, com o mais recente como padrão
+    selected_file = st.selectbox("Selecione um arquivo para processar:", arquivos, index=arquivos.index(arquivo_recente_nome))
+
     if selected_file:
         # Caminho completo do arquivo selecionado
         file_path = os.path.join(UPLOAD_FOLDER, selected_file)
-        # Nome do CSV correspondente
-        csv_filename = os.path.splitext(selected_file)[0] + ".csv"
-        csv_path = os.path.join(OUTPUT_FOLDER, csv_filename)
+        # Nome do Excel correspondente
+        excel_filename = os.path.splitext(selected_file)[0] + ".xlsx"
+        excel_path = os.path.join(OUTPUT_FOLDER, excel_filename)
 
-        if csv_path and os.path.exists(csv_path):
+        if excel_path and os.path.exists(excel_path):
+            # Exibe o Excel e permite marcar como lido
+            display_dataframe_with_checkboxes(excel_path)
 
-            # Exibe o CSV e permite marcar como lido
-            display_dataframe_with_checkboxes(csv_path)
-
-            # Botão para download do CSV selecionado
-            with open(csv_path, "rb") as f:
+            # Botão para download do arquivo Excel selecionado
+            with open(excel_path, "rb") as f:
                 st.download_button(
-                    label="Download CSV",
+                    label="Download Excel",
                     data=f,
-                    file_name=os.path.basename(csv_path),
-                    mime="text/xslx"
+                    file_name=os.path.basename(excel_path),
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
         else:
-            st.error("Erro ao processar o arquivo PDF ou carregar o CSV existente.")
+            st.error("Erro ao processar o arquivo PDF ou carregar o arquivo Excel existente.")
 else:
     st.write("Nenhum arquivo PDF disponível para exibir.")
-
 
 # Botão para ir à página de envio de relatório
 if st.button("Voltar a página Inicial"):

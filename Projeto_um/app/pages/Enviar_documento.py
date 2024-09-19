@@ -1,11 +1,11 @@
 import streamlit as st
 import os
 import sys
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from utils.create_folder import create_project_folders
-from utils.process_pdf import process_pdf_to_csv
-from utils.manage_dataframe import display_dataframe_with_checkboxes  # Importa a nova função
+from utils.process_pdf import process_pdf_to_excel  # Alterado para Excel
 
 # Cria os diretórios do projeto
 UPLOAD_FOLDER, OUTPUT_FOLDER = create_project_folders()
@@ -23,30 +23,13 @@ if uploaded_file is not None:
 
     st.success(f"Arquivo {uploaded_file.name} salvo com sucesso!")
 
-    # Processa o PDF para CSV
-    csv_path = process_pdf_to_csv(file_path, OUTPUT_FOLDER)
+    # Processa o PDF para Excel
+    excel_path = process_pdf_to_excel(file_path, OUTPUT_FOLDER)  # Alterado para gerar Excel
 
-    if csv_path:
-        st.success(f"CSV gerado com sucesso: {csv_path}")
+    if excel_path:
+        st.success(f"Arquivo Excel gerado com sucesso: {excel_path}")
         
-        # Exibe o CSV e permite marcar como lido
-        display_dataframe_with_checkboxes(csv_path)
-        
-        # Botão para download do CSV gerado
-        with open(csv_path, "rb") as f:
-            st.download_button(
-                label="Download CSV",
-                data=f,
-                file_name=os.path.basename(csv_path),
-                mime="text/csv"
-            )
+        # Redireciona para a página de visualização de documentos
+        st.switch_page("Pages/Visualizar_documento.py")
     else:
         st.error("Erro ao processar o arquivo PDF.")
-
-# Botão para ir à página de envio de relatório
-if st.button("Voltar a página Inicial"):
-    st.switch_page("main.py")
-
-# Botão para ir à página de visualização de relatórios
-if st.button("Visualizar relatórios antigos"):
-    st.switch_page("Pages/Visualizar_documento.py")

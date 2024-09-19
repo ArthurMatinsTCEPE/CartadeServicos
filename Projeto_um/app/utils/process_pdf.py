@@ -1,6 +1,7 @@
 import pdfplumber
 import re
 import os
+import pandas as pd
 import csv
 
 def extract_sections_with_type(pdf_path):
@@ -61,14 +62,17 @@ def extract_process_info(text, page_num, data_diario, tipo_decisao):
 
     return processos
 
-def save_to_csv(processos, output_csv):
+def save_to_excel(processos, output_excel):
     header = ["Numero do Processo", "Numero do Extrato", "Data da Publicacao", "Numero da Pagina", "Tipo de Decisão"]
-    with open(output_csv, mode='w', newline='', encoding='utf-8') as file:
-        writer = csv.writer(file)
-        writer.writerow(header)
-        writer.writerows(processos)
+    
+    # Criação de um DataFrame com os processos
+    df = pd.DataFrame(processos, columns=header)
+    
+    # Salvando em Excel
+    df.to_excel(output_excel, index=False, engine='openpyxl')
 
-def process_pdf_to_csv(pdf_path, output_folder):
+# Função para processar o PDF e salvar os dados no formato Excel
+def process_pdf_to_excel(pdf_path, output_folder):
     sections = extract_sections_with_type(pdf_path)
     if not sections:
         print("No sections found.")
@@ -77,12 +81,15 @@ def process_pdf_to_csv(pdf_path, output_folder):
     data_diario = extract_diario_date(sections[0][1])
     processos = []
 
+    # Extrai informações dos processos de cada seção
     for page_num, text, tipo_decisao in sections:
         processos.extend(extract_process_info(text, page_num, data_diario, tipo_decisao))
 
-    csv_filename = os.path.splitext(os.path.basename(pdf_path))[0] + ".csv"
-    csv_path = os.path.join(output_folder, csv_filename)
+    # Definir o nome e caminho do arquivo Excel
+    excel_filename = os.path.splitext(os.path.basename(pdf_path))[0] + ".xlsx"
+    excel_path = os.path.join(output_folder, excel_filename)
     
-    save_to_csv(processos, csv_path)
+    # Salvar os processos no arquivo Excel
+    save_to_excel(processos, excel_path)
 
-    return csv_path
+    return excel_path

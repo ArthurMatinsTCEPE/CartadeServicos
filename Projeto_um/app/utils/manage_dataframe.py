@@ -2,44 +2,45 @@ import pandas as pd
 import streamlit as st
 import os
 
-# Function to load data from CSV
-def load_data(csv_path):
-    if os.path.exists(csv_path):
-        return pd.read_csv(csv_path)
+# Função para carregar dados do Excel
+def load_data(excel_path):
+    if os.path.exists(excel_path):
+        return pd.read_excel(excel_path)  # Lê um arquivo Excel
     else:
         return pd.DataFrame()
 
-# Function to save the DataFrame to CSV
-def save_read_status(data, csv_path):
-    data.to_csv(csv_path, index=False)
+# Função para salvar o DataFrame em um arquivo Excel
+def save_read_status(data, excel_path):
+    with pd.ExcelWriter(excel_path, engine='openpyxl') as writer:
+        data.to_excel(writer, index=False)
 
-# Function to display DataFrame with checkboxes and manage read status
-def display_dataframe_with_checkboxes(csv_path):
-    # Load data
-    data = load_data(csv_path)
+# Função para exibir o DataFrame com checkboxes e gerenciar o status de leitura
+def display_dataframe_with_checkboxes(excel_path):
+    # Carregar os dados
+    data = load_data(excel_path)
 
-    # Add "Lido" column if it doesn't exist
+    # Adicionar a coluna "Lido" se não existir
     if 'Lido' not in data.columns:
-        data['Lido'] = False  # Initialize as unread
+        data['Lido'] = False  # Inicializa como não lido
 
-    # Display page title
+    # Exibir título da página
     st.title('Processos - Marcar como Lido')
 
-    # Display DataFrame with editor
+    # Exibir o DataFrame com editor
     edited_data = st.data_editor(data, use_container_width=True)
 
-    # Update DataFrame with edited data
+    # Atualizar o DataFrame com os dados editados
     data = edited_data
 
-    # Generate a unique key based on the file path
-    unique_key = f'save_state_button_{os.path.basename(csv_path)}'
+    # Gerar uma chave única com base no caminho do arquivo
+    unique_key = f'save_state_button_{os.path.basename(excel_path)}'
 
-    # Button to save current state with a unique key
+    # Botão para salvar o estado atual com uma chave única
     if st.button('Salvar Estado', key=unique_key):
-        save_read_status(data, csv_path)
+        save_read_status(data, excel_path)
         st.success('Estado salvo com sucesso!')
 
-# Example usage:
-# Replace 'your_file.csv' with your actual CSV file path.
-csv_path = 'your_file.csv'
-display_dataframe_with_checkboxes(csv_path)
+# Exemplo de uso:
+# Substitua 'your_file.xlsx' pelo caminho do seu arquivo Excel real.
+excel_path = 'your_file.xlsx'
+display_dataframe_with_checkboxes(excel_path)
