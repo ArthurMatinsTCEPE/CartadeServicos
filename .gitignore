@@ -38,10 +38,10 @@ venv/
 .vscode/
 
 # Configurations and secrets
-config.toml
-secrets.toml
-.streamlit/secrets.toml
-.streamlit/config.toml
+#config.toml
+#secrets.toml
+#.streamlit/secrets.toml
+#.streamlit/config.toml
 
 # Output directories
 uploads/
