@@ -44,5 +44,5 @@ if st.button("Enviar um relatório novo"):
     st.switch_page("pages/Enviar_documento.py")
 
 if st.button("Visualizar relatórios antigos"):
-    st.switch_page("Pages/Visualizar_documento.py")
+    st.switch_page("pages/Visualizar_documento.py")
     
