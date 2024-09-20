@@ -33,3 +33,6 @@ if uploaded_file is not None:
         st.switch_page("Pages/Visualizar_documento.py")
     else:
         st.error("Erro ao processar o arquivo PDF.")
+
+if st.button("Visualizar relatórios antigos"):
+    st.switch_page("pages/Visualizar_documento.py")
