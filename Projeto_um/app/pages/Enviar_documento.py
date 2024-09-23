@@ -30,6 +30,9 @@ if uploaded_file is not None:
         st.success(f"Arquivo Excel gerado com sucesso: {excel_path}")
         
         # Redireciona para a página de visualização de documentos
-        st.switch_page("Pages/Visualizar_documento.py")
+        st.switch_page("pages/Visualizar_documento.py")
     else:
         st.error("Erro ao processar o arquivo PDF.")
+
+if st.button("Visualizar relatórios antigos"):
+    st.switch_page("pages/Visualizar_documento.py")

@@ -59,10 +59,11 @@ if arquivos:
 else:
     st.write("Nenhum arquivo PDF disponível para exibir.")
 
-# Botão para ir à página de envio de relatório
+# Botão para ir à página inicial
 if st.button("Voltar a página Inicial"):
     st.switch_page("main.py")
 
-# Botão para ir à página de visualização de relatórios
-if st.button("Visualizar relatórios antigos"):
-    st.switch_page("Pages/Visualizar_documento.py")
+# Botão para ir à página de envio de relatório
+if st.button("Enviar um relatório novo"):
+    st.switch_page("pages/Enviar_documento.py")
+
